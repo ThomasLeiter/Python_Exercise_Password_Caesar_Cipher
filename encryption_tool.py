@@ -1,4 +1,12 @@
-def password_caesar_cipher(msg, pw, encrypt, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+"""
+Naive implementation of a password based Caesar cipher.
+
+Useful methods:
+---------------
+password_caesar_cipher
+"""
+
+def password_caesar_cipher(message, password, encrypt, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     """
     Extension of the classic Caesar Cipher.
     Characters will be rotated based on the characters in the given password.
@@ -6,9 +14,9 @@ def password_caesar_cipher(msg, pw, encrypt, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXY
 
     Parameters:
     -----------
-    msg : str
+    message : str
         The message to encrypt/decrypt
-    pw : str
+    password : str
         The password to use for encryption/decryption
     encrypt : bool
         Mode of method: Encryption or Decryption
@@ -20,48 +28,50 @@ def password_caesar_cipher(msg, pw, encrypt, alphabet="ABCDEFGHIJKLMNOPQRSTUVWXY
     str
         The encrypted/decrypted message
     """
-    alpha_N = len(alphabet)
+    alpha_length = len(alphabet)
     # Create a dictionary {char : index}
-    positions = {alphabet[i] : i for i in range(alpha_N)}
+    positions = {alphabet[i] : i for i in range(alpha_length)}
     # Rotate left during encryption and rotate right during decryption
     direction = 1 if encrypt else -1
     enc_msg = ""
-    pw_idx = 0
-    for c in msg:
+    password_idx = 0
+    for char in message:
         # Get next char from password
-        pc = pw[pw_idx % len(pw)]
+        password_character = password[password_idx % len(password)]
         # Calculate index of encrypted/decrypted char
-        enc_pos = (positions[c] + direction * positions[pc]) % alpha_N
+        enc_pos = (positions[char] + direction * positions[password_character]) % alpha_length
         # Append char to encrypted message
         enc_msg += alphabet[enc_pos]
-        pw_idx += 1
+        password_idx += 1
     return enc_msg
 
 def read_from_file(path):
     """
     Read the file 'path' and return its content.
     """
-    with open(path) as f:
-        return f.read()
+    with open(path, encoding="utf8") as file:
+        return file.read()
 
 def write_to_file(path, data):
     """
-    Write 'data' to file 'path', overwriting existing content if present. 
+    Write 'data' to file 'path', overwriting existing content if present.
     """
-    with open(path, "w") as f:
-        f.write(data)
+    with open(path, "w", encoding="utf8") as file:
+        file.write(data)
 
-def create_full_alphabet(pw, msg):
+def create_full_alphabet(password, message):
     """
     Create a full alphabet with lower and upper case letters
     as well as numbers and all special characters used in
     both password 'pw' and message 'msg'.
     """
     full_abc = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    return "".join(set(c for c in full_abc+pw+msg))
+    return "".join(set(char for char in full_abc+password+message))
 
 def simple_demonstration():
-    # Simple demonstration on a short message
+    """
+    Simple demonstration on a short message
+    """
     password = "PASSWORD"
     message = "STRENGGEHEIMEINFORMATIONEN"
     print(f"{message=}")
@@ -71,7 +81,9 @@ def simple_demonstration():
     print(f"{dec_msg=}")
 
 def advanced_demonstration():
-    # Demonstration with a longer text. 
+    """
+    Demonstration with a longer text.
+    """
     # Let's use our own doc string and
     # a pretty obscure password
     password = r"<--\/ER4-->"
@@ -92,12 +104,14 @@ def advanced_demonstration():
     print(f"\nDecrypted documentation:\n{dec_docs}\n")
 
 def file_demonstration(file_name):
-    # Let us now read and encrypt an entire file
-    # full of highly interesting lorem ipsum
+    """
+    Let us now read and encrypt an entire file
+    full of highly interesting lorem ipsum
+    """
     ori_path = file_name + ".txt"
     enc_path = file_name + "_enc.txt"
     dec_path = file_name + "_dec.txt"
-    
+
     # Read original file
     lorem_ipsum = read_from_file(ori_path)
     password = "Secret Roman Business"
@@ -116,11 +130,16 @@ def file_demonstration(file_name):
     enc_content = read_from_file(enc_path)
     dec_content = read_from_file(dec_path)
     if ori_content != enc_content and ori_content == dec_content:
-        print("Encrypted content is different from and decrypted content is equal to original content as intended!")
+        print("Encrypted content is different from" + \
+            "and decrypted content is equal to " + \
+            "original content as intended!")
     else:
         print("Encryption/Decryption failed.")
 
 def main():
+    """
+    Runs our demonstration methods
+    """
     simple_demonstration()
     advanced_demonstration()
     file_demonstration("lorem_ipsum")
